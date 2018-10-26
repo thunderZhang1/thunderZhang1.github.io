@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。实用拜占庭容错(PBFT)PBFT是一类状态机拜占庭系统，要求共同维护一个状态，所有节点采取行动一致。PBFT需要运行三个基本协议，包括一致性协议，检查节点协议和视图更换协议。其中一致性协">
+<meta name="keywords" content="共识算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈区块链共识机制">
+<meta property="og:url" content="http://yoursite.com/2016/05/10/浅谈共识机制二/index.html">
+<meta property="og:site_name" content="千里之行，始于足下">
+<meta property="og:description" content="区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。实用拜占庭容错(PBFT)PBFT是一类状态机拜占庭系统，要求共同维护一个状态，所有节点采取行动一致。PBFT需要运行三个基本协议，包括一致性协议，检查节点协议和视图更换协议。其中一致性协">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://bdn.135editor.com/files/users/497/4979474/201807/F8KbIOIY_8FUK.jpg">
+<meta property="og:image" content="https://bdn.135editor.com/files/users/497/4979474/201808/Dk7Bzsd3_aV9K.png">
+<meta property="og:image" content="https://bdn.135editor.com/files/users/497/4979474/201808/xeXqImAB_69eb.png">
+<meta property="og:updated_time" content="2018-10-26T10:58:54.734Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈区块链共识机制">
+<meta name="twitter:description" content="区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。实用拜占庭容错(PBFT)PBFT是一类状态机拜占庭系统，要求共同维护一个状态，所有节点采取行动一致。PBFT需要运行三个基本协议，包括一致性协议，检查节点协议和视图更换协议。其中一致性协">
+<meta name="twitter:image" content="https://bdn.135editor.com/files/users/497/4979474/201807/F8KbIOIY_8FUK.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/05/10/浅谈共识机制二/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浅谈区块链共识机制 | 千里之行，始于足下</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">千里之行，始于足下</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">鹰族传人的博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/05/10/浅谈共识机制二/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="鹰族传人">
+      <meta itemprop="description" content="Blog">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="千里之行，始于足下">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈区块链共识机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-05-10 00:00:00" itemprop="dateCreated datePublished" datetime="2016-05-10T00:00:00+08:00">2016-05-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-26 18:58:54" itemprop="dateModified" datetime="2018-10-26T18:58:54+08:00">2018-10-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/区块链/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <section data-role="outer" label="Powered by 135editor.com" style="font-size:16px;font-family:微软雅黑;"><p><img src="https://bdn.135editor.com/files/users/497/4979474/201807/F8KbIOIY_8FUK.jpg" alt="gongshi.jpg"></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><blockquote class="135brush" data-style="font-size:14px" style="max-width: 100%; margin: 0px; padding: 10px 15px 20px; border: 1px solid #1e9be8; line-height: 25px;"><p style="font-size: 14px; color: inherit;">区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。</p></blockquote></section><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">实用拜占庭容错(PBFT)</span></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);">PBFT是一类状态机拜占庭系统，要求共同维护一个状态，所有节点采取行动一致。</section></section></section><section class="_135editor" data-role="paragraph" style="border: 0px none; box-sizing: border-box;"><p><br></p></section><p><br></p><p><span style="font-size: 14px;">PBFT需要运行三个基本协议，包括一致性协议，检查节点协议和视图更换协议。其中一致性协议要求来自客户端的请求在每个服务器节点上都按照一个确定的顺序执行。<img src="https://bdn.135editor.com/files/users/497/4979474/201808/Dk7Bzsd3_aV9K.png" alt="pbft.png"></span></p><p><br></p><p><span style="font-size: 14px; caret-color: red;">上图显示的是一个简化的PBFT的协议通信模式。其中C为客户端,0-3为服务节点，特别的，0为主节点，3为故障节点</span><br></p><p><strong><span style="font-size: 14px;">Request:</span></strong><span style="font-size: 14px;">&nbsp;</span></p><p><span style="font-size: 14px;">客户端C往共识网络发交易。从全网节点选举出一个主节点（Leader）</span></p><p><strong><span style="font-size: 14px;">Pre-Prepare (主节点广播交易执行的顺序)：</span></strong><span style="font-size: 14px;">&nbsp;</span></p><p><span style="font-size: 14px;">每个节点把客户端发来的交易向全网广播，主节点0将从网络收集到多个交易排序后存入列表，确认交易的执行顺序，并将该列表向全网广播，扩散至123</span></p><p><strong><span style="font-size: 14px;">Prepare (共识交易执行的顺序)：</span></strong><span style="font-size: 14px;">&nbsp;</span></p><p><span style="font-size: 14px;">每个节点接收到交易列表后，广播给所有非主节点。节点把接收到的f+1个相同的交易列表（包括自己的），作为最终交易执行的顺序。</span></p><p><span style="font-size: 14px;"><strong>Commit (执行交易生成区块，广播共识区块)：</strong>&nbsp;</span></p><p><span style="font-size: 14px;">每个节点接收到交易列表后，根据排序模拟执行这些交易。所有交易执行完后，基于交易结果计算新区块的哈希摘要，并向全网广播（commit），1-&gt;023，2-&gt;013，3因为宕机无法广播。如果一个节点收到的f+1个相同的区块，即将其提交到本地区块链和状态数据库。</span></p><p><span style="font-size: 14px;"><strong>Reply：&nbsp;</strong></span></p><p><span style="font-size: 14px;">共识网络的每个节点返回结果给客户端，客户端把收到的f+1个相同的结果作为返回。</span></p><p><br></p><p><span style="font-size: 14px;">与POW共识中需要51%正常节点不同的是，PBFT允许的故障节点是f = (n-1)/3</span></p><p><span style="font-size: 14px;">这个公式的推导过程如下：</span></p><p><span style="font-size: 14px;">1.假设共有n个节点，故障节点为f</span></p><p><span style="font-size: 14px;">2.遵循少数服从多少的原则。</span></p><p><span style="font-size: 14px;">&nbsp; &nbsp; a.假定f个故障节点均未对客户端请求给出响应，需保证n-f&gt;f</span></p><p><span style="font-size: 14px;">&nbsp; &nbsp; b.极端情况下a中未响应节点全是正常节点，但由于超时等原因未给出响应，即f个故障节点全部在剩下的n-f中，需要保证 n&gt;3f（n-f-f&gt;f）</span></p><p><span style="font-size: 14px;">3.所以极端情况下n= 3f+1依然可以确定真个网络是安全可靠。</span><span style="font-size: 14px; caret-color: red;">即f = (n-1)/3</span></p><p><br></p><p><strong><span style="font-size: 14px;">PBFT共识优点：共识效率高，可满足高频交易量的需求。</span></strong></p><p><strong><span style="font-size: 14px;">PBFT共识缺点：当有1/3或以上记账人停止工作后，系统将无法提供服务；</span></strong></p><p><strong><span style="font-size: 14px;">当有1/3或以上记账人联合作恶，且其它所有的记账人被恰好分割为两个网络孤岛时，恶意记账人可以使系统出现分叉,但是会留下密码学证据。</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：hyperledger的fabric</span></strong></p><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;">授权拜占庭容错(dBFT)<br></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);"><span style="caret-color: red; font-size: 14px;">2016年4月，小蚁公司发布共识算法白皮书，描述了一种通用共识机制——授权拜占庭容错，提出了一种改进的拜占庭容错算法，是由权益来选出记账人，然后记账人之间通过拜占庭容错算法来达成共识。</span></section></section></section><p><br></p><p><span style="font-size: 14px;">授权拜占庭容错算法在使用拜占庭容错算法的基础上，进行了以下改进：</span></p><p><span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; 1. 将C/S架构的请求响应模式改进为适合P2P网络的对等节点模式；</span></p><p><span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; 2. 将静态的共识参与节点改进为可动态进入、退出的共识参与节点；</span></p><p><span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; 3. 为共识参与节点的产生设计了一套基于持有权益比例的投票机，</span><span style="font-size: 14px; caret-color: red;">通过投票决定共识参与节点（记账节点）；</span></p><p><span style="font-size: 14px;">&nbsp; &nbsp; &nbsp; 4. 在区块链中引入数字证书，解决了投票中对记账节点真实身份的认&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 证问题。</span></p><p><br></p><p><strong><span style="font-size: 14px;">dBFT的优点：专业化的记账人；可以容忍任何类型的错误；记账由多人协同完成；每一个区块都有最终性，不会分叉；算法的可靠性有严格的数字证明。</span></strong></p><p><strong><span style="font-size: 14px;">dBFT的缺点：当1/3及以上的记账人停止工作后，系统将无法提供服务；当1/3及以上的记账人联合作恶，且其他所有的记账人被恰好分割为两个网络孤岛时，恶意记账人可以使系统出现分叉，但是会留下密码学证据。</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：NEO</span></strong></p><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;">Ripple共识算法<br></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);"><span style="font-size: 14px;"><p>Ripple的共识达成发生在验证节点之间，每个验证节点都预先配置了一份可信任节点</p><p>名单，称为UNL（Unique Node List）。</p></span></section></section></section><p><br></p><p><span style="font-size: 14px;">每隔几<span style="caret-color: red;">秒，Ripple网络将进行如下共识过程：</span></span></p><p><span style="font-size: 14px; caret-color: red;"><img src="https://bdn.135editor.com/files/users/497/4979474/201808/xeXqImAB_69eb.png" alt="屏幕快照 2018-08-01 下午3.34.24.png"></span></p><p><span style="font-size: 14px;">1. 每个验证节点会不断收到从网络发送过来的交易，通过与本地账本数据验证后，</span><span style="caret-color: red; font-size: 14px;">不合法的交易直接丢弃，合法的交易将汇总成交易候选集（candidate set）。交易候选集里面还包括之前共识过程无法确认而遗留下来的交易。</span></p><p><span style="font-size: 14px;">2. 每个验证节点把自己的交易候选集作为提案发送给其他验证节点。</span></p><p><span style="font-size: 14px;">3. 验证节点在收到其他节点发来的提案后，如果不是来自UNL上的节点，则忽略该</span><span style="caret-color: red; font-size: 14px;">提案；如果是来自UNL上的节点，就会对比提案中的交易和本地的交易候选集，如果有相同的交易，该交易就获得一票。在一定时间内，当交易获得超过50%的票数时，则该交易进入下一轮。没有超过50%的交易，将留待下一次共识过程去确认。</span></p><p><span style="font-size: 14px;">4. 验证节点把超过50%票数的交易作为提案发给其他节点，同时提高所需票数的阈</span><span style="font-size: 14px; caret-color: red;">值到60%，重复步骤3）、步骤4），直到阈值达到80%。</span></p><p><span style="font-size: 14px;">5. 验证节点把经过80%UNL节点确认的交易正式写入本地的账本数据中，称为最后</span><span style="font-size: 14px; caret-color: red;">关闭账本（Last Closed Ledger），即账本最后（最新）的状态</span></p><p><br></p><p><span style="font-size: 14px;"><strong>Ripple共识的优点：在一定程度上缩短了共识达成的时间;不再需要大量消耗能源挖矿</strong></span></p><p><strong><span style="font-size: 14px;">Ripple共识的缺点：相对中心化</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：Ripple</span></strong></p><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">权威证明机制(Proof of Authority)</span></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);">在基于PoA的网络中，事务和块由经批准的帐户验证，称为验证器。验证器运行软件，允许它们将事务放入块中。</section></section></section><section class="_135editor" data-role="paragraph" style="border: 0px none; box-sizing: border-box;"><p><br></p></section><p><span style="font-size: 14px;">授权证明（PoA）是一种经过修改的股权证明形式（PoS），不同的是验证者的身份扮演着股权的角色。</span></p><p><span style="font-size: 14px;">确定验证器必须满足的三个主要条件是：</span></p><p><span style="font-size: 14px;">1.必须在链上正式验证身份，并且可以在公共可用域中交叉检查信息</span></p><p><span style="font-size: 14px;">2.必须难以获得资格，才能获得验证所获得和重视的区块的权利。（例如：潜在的验证人需要获得公证书）</span></p><p><span style="font-size: 14px;">3. 建立权力机构的检查和程序必须完全统一</span></p><p><br></p><p><strong><span style="font-size: 14px;">PoA的优点：在一定程度上缩短了共识达成的时间;不再需要大量消耗能源挖矿</span></strong></p><p><strong><span style="font-size: 14px;">PoA的缺点：相对中心化</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：VeChain</span></strong></p><p><br></p><p><br></p></section>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/共识算法/" rel="tag"><i class="fa fa-tag"></i>共识算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/10/网路爬虫/" rel="prev" title="自己动手写网络爬虫">
+                自己动手写网络爬虫 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="鹰族传人">
+            
+              <p class="site-author-name" itemprop="name">鹰族传人</p>
+              <p class="site-description motion-element" itemprop="description">Blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/about/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/thunderZhang1" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:542931095@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">鹰族传人</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script id="ribbon" type="text/javascript" size="300" alpha="0.6" zindex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

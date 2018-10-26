@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="1、MVC MVC即Model-View-Controller,MVC是目前大多数企业采用J2EE的结构设计，主要适用于交互式的Web应用。  MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。  Model层：JavaBean实体类，用于保存实例数据 View层：UI界面，用于显示数据和接收用户的手势和输入 Controller层：控制器用于更新">
+<meta name="keywords" content="architecture">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈Android架构">
+<meta property="og:url" content="http://yoursite.com/2016/06/22/Android-Architecture/index.html">
+<meta property="og:site_name" content="千里之行，始于足下">
+<meta property="og:description" content="1、MVC MVC即Model-View-Controller,MVC是目前大多数企业采用J2EE的结构设计，主要适用于交互式的Web应用。  MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。  Model层：JavaBean实体类，用于保存实例数据 View层：UI界面，用于显示数据和接收用户的手势和输入 Controller层：控制器用于更新">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/MVC-basic.svg/600px-MVC-basic.svg.png">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/d/dc/Model_View_Presenter_GUI_Design_Pattern.png">
+<meta property="og:image" content="http://img0.tuicool.com/nueiiqF.png!web">
+<meta property="og:updated_time" content="2018-10-26T10:58:34.711Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈Android架构">
+<meta name="twitter:description" content="1、MVC MVC即Model-View-Controller,MVC是目前大多数企业采用J2EE的结构设计，主要适用于交互式的Web应用。  MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。  Model层：JavaBean实体类，用于保存实例数据 View层：UI界面，用于显示数据和接收用户的手势和输入 Controller层：控制器用于更新">
+<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/MVC-basic.svg/600px-MVC-basic.svg.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/06/22/Android-Architecture/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浅谈Android架构 | 千里之行，始于足下</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">千里之行，始于足下</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">鹰族传人的博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/22/Android-Architecture/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="鹰族传人">
+      <meta itemprop="description" content="Blog">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="千里之行，始于足下">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈Android架构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-06-22 00:00:00" itemprop="dateCreated datePublished" datetime="2016-06-22T00:00:00+08:00">2016-06-22</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-26 18:58:34" itemprop="dateModified" datetime="2018-10-26T18:58:34+08:00">2018-10-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1、MVC"><a href="#1、MVC" class="headerlink" title="1、MVC"></a>1、MVC</h3><blockquote>
+<p>MVC即Model-View-Controller,MVC是目前大多数企业采用J2EE的结构设计，主要适用于交互式的Web应用。</p>
+</blockquote>
+<h6 id="MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。"><a href="#MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。" class="headerlink" title="MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。"></a>MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。</h6><p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/MVC-basic.svg/600px-MVC-basic.svg.png" alt="MVC结构图例"></p>
+<ul>
+<li>Model层：JavaBean实体类，用于保存实例数据</li>
+<li>View层：UI界面，用于显示数据和接收用户的手势和输入</li>
+<li>Controller层：控制器用于更新UI界面和数据实例</li>
+</ul>
+<p>在Android的开发过程中，每个层对应如下：</p>
+<ul>
+<li>Model层：对应JavaBean、Database、SharePreference和网络请求等；</li>
+<li>View层：对应xml布局、自定义View或ViewGroup；    </li>
+<li>Controller层：对应Activity、Fragment；</li>
+</ul>
+<p>以用户点击登录按钮为例：View接收用户的点击行为，并告知controller层用户的意图，controller将用户输入的表单数据通过model层提交到服务端，model数据更新时通知controller更新View。</p>
+<h6 id="这种模式的优点在于Controller层起到桥梁作用，在View层和Model层之间通信，使得View层和Modle层分离解耦。但是由于在Android中View层的XML控制能力太弱，Controler层的Activity并没有和View层完全分离。当需要动态改变一个页面的显示（如背景、显示隐藏按钮等），都无法在xml中处理，只能在Activity中处理。造成了Activity即时Controller层又是View层，代码繁冗。想必你也有过Activity过于庞大的苦恼吧。"><a href="#这种模式的优点在于Controller层起到桥梁作用，在View层和Model层之间通信，使得View层和Modle层分离解耦。但是由于在Android中View层的XML控制能力太弱，Controler层的Activity并没有和View层完全分离。当需要动态改变一个页面的显示（如背景、显示隐藏按钮等），都无法在xml中处理，只能在Activity中处理。造成了Activity即时Controller层又是View层，代码繁冗。想必你也有过Activity过于庞大的苦恼吧。" class="headerlink" title="这种模式的优点在于Controller层起到桥梁作用，在View层和Model层之间通信，使得View层和Modle层分离解耦。但是由于在Android中View层的XML控制能力太弱，Controler层的Activity并没有和View层完全分离。当需要动态改变一个页面的显示（如背景、显示隐藏按钮等），都无法在xml中处理，只能在Activity中处理。造成了Activity即时Controller层又是View层，代码繁冗。想必你也有过Activity过于庞大的苦恼吧。"></a>这种模式的优点在于Controller层起到桥梁作用，在View层和Model层之间通信，使得View层和Modle层分离解耦。但是由于在Android中View层的XML控制能力太弱，Controler层的Activity并没有和View层完全分离。当需要动态改变一个页面的显示（如背景、显示隐藏按钮等），都无法在xml中处理，只能在Activity中处理。造成了Activity即时Controller层又是View层，代码繁冗。想必你也有过Activity过于庞大的苦恼吧。</h6><h3 id="2-MVP"><a href="#2-MVP" class="headerlink" title="2.MVP"></a>2.MVP</h3><blockquote>
+<p>由于MVC在android开发中局限性，在MVC的基础上变种一种新的MVP.因为Activity既充当了Controller的角色，有包含了View的逻辑。所以将原本View的逻辑抽象成View接口，将Controller的业务逻辑抽象成Presenter接口，并将Activity归为View层，弥补XML控制View的不足，这便是MVP的由来。</p>
+</blockquote>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Model_View_Presenter_GUI_Design_Pattern.png" alt="MVC结构图例"></p>
+<p>这里的Presenter层持有View和Model的实例，等同于MVC中的controller层。<br>下面以google在github上提供的官方<a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp/" target="_blank" rel="noopener">demo</a>中感受下MVP的妙处吧。</p>
+<p>首先demo是以一款简单todo应用，可查看计划任务列表，增删任务等操作。下面以任务列表页为例,采用先按照业务层面的逻辑分析代码，再回过头总结的方法，看下google是怎么实践MVP模式的</p>
+<p>TasksActivity.java</p>
+<pre><code>//持有一个TasksPresenter类的实例
+private TasksPresenter mTasksPresenter;
+
+        　......
+//使用Fragment显示tasks数据
+TasksFragment tasksFragment = (TasksFragment)     getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+    if (tasksFragment == null) {
+        // Create the fragment
+        tasksFragment = TasksFragment.newInstance();
+                    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),tasksFragment, R.id.contentFrame);
+    }
+    // 构造mTasksPresenter
+ mTasksPresenter = new TasksPresenter(Injection.provideTasksRepository(getApplicationContext()), tasksFragment);
+</code></pre><p>这里可以看出TasksActivity持有一个TasksPresneter类的实例，并且使用TasksFragment的方式在Fragment中呈现数据。</p>
+<p>TasksPresenter.java</p>
+<pre><code>public TasksPresenter(@NonNull TasksRepository tasksRepository, @NonNull TasksContract.View tasksView) {
+    mTasksRepository = checkNotNull(tasksRepository, &quot;tasksRepository cannot be null&quot;);
+    mTasksView = checkNotNull(tasksView, &quot;tasksView cannot be null!&quot;);
+     //将Presenter和View进行绑定
+    mTasksView.setPresenter(this);
+}
+</code></pre><p> 结合上面TasksActivity.java的代码我们知道通过mTasksView.setPresenter(this)，TasksFragment已经持有一个TasksPresenter的实例。同时TasksPresente中的mTasksView也被赋值。<br> TasksFragment.java</p>
+<pre><code>//多态
+private TasksContract.Presenter mPresenter;
+
+ ......
+
+@Override
+public void onResume() {
+    super.onResume();
+     //调用TasksPresenter的start()方法
+    mPresenter.start();
+}
+......
+fab.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+               //调用TasksPresenter的addNewTask()方法
+            mPresenter.addNewTask();
+        }
+    });
+</code></pre><p>看到这里我们大概明白了，TasksFragment作为View层接收到用户的点击，找到对应的Presenter执行对应的方法，然后因为Presenter又持有此View，得到model层数据变更时直接调用View相应的方法更新UI。</p>
+<p>以为这样就结束了吗？细心的你肯定也发现TasksContract</p>
+<pre><code>public interface TasksContract {
+    interface View extends BaseView&lt;Presenter&gt; {
+        void setLoadingIndicator(boolean active);
+        void showTasks(List&lt;Task&gt; tasks);
+          ......
+    }
+
+    interface Presenter extends BasePresenter {
+        void result(int requestCode, int resultCode);
+        void loadTasks(boolean forceUpdate);
+        void addNewTask();    
+        ......    
+    }
+   }
+</code></pre><p> 分别继承了BaseView和BasePresenter，View和Presenter中实现的方法分别是UI操作，和数据业务逻辑操作， 此时是不是看的异常的清晰。</p>
+<h6 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h6><ol>
+<li>首先BaseView和BasePresenter中定义UI和业务上都要用的方法，比如UI的showLoading(),hideLoading()等</li>
+<li>定义Contract接口，包含View和Presenter接口分别继承BaseView和BasePresenter，并分别定义UI和业务逻辑方法。</li>
+<li>定义XXXPresenter implements XXXContract.Presenter,包含一个XXXContract.View属性</li>
+<li>定义XXXActivity/XXXFragment implements XXXContract.View，</li>
+<li>将XXXActivity/XXXFragment和XXXPresenter通过构造方法或set方法等进行绑定</li>
+</ol>
+<h3 id="3、clean架构"><a href="#3、clean架构" class="headerlink" title="3、clean架构"></a>3、clean架构</h3><blockquote>
+<p><a href="https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html" target="_blank" rel="noopener">Clean架构</a>中，代码被分成“洋葱形”,从外向内层层依赖，内层不能依赖外层，即内层不知道有关外层的任何事情。<a href="https://github.com/android10/Android-CleanArchitecture" target="_blank" rel="noopener">uncle Bob的demo</a></p>
+</blockquote>
+<p><img src="http://img0.tuicool.com/nueiiqF.png!web" alt="Clean架构实例"><br>Clean架构可以使你的代码有如下特性：</p>
+<ul>
+<li>独立于架构</li>
+<li>易于测试</li>
+<li>独立于UI </li>
+<li>独立于数据库</li>
+<li>独立于任何外部类库</li>
+</ul>
+<p>一般项目会分3层：</p>
+<ul>
+<li>domain layer: 主要定义POJO,定义业务接口</li>
+<li>data layer: domain中定义接口的具体实现</li>
+<li>presentation layer: UI逻辑,不处理跟UI无关的任务业务</li>
+</ul>
+<h5 id="domain层"><a href="#domain层" class="headerlink" title="domain层"></a>domain层</h5><p>domain中的代码不会出现任何跟UI相关的任何逻辑</p>
+<ol>
+<li>定义普通的POJO类</li>
+<li>定义Use Case:包含了App可以做的所有操作。</li>
+<li>定义核心逻辑接口，不关心怎么实现，只为核心业务逻辑定义规则</li>
+</ol>
+<h5 id="data层"><a href="#data层" class="headerlink" title="data层"></a>data层</h5><p>data中的代码不会出现任何跟UI相关的任何逻辑</p>
+<ol>
+<li>依赖domain层，是domain层的具体实现</li>
+<li>网络请求框架</li>
+<li>对数据进行操作，保存，包装，映射等</li>
+</ol>
+<h5 id="presentation层"><a href="#presentation层" class="headerlink" title="presentation层"></a>presentation层</h5><p>presentation层主要处理UI逻辑，不关心数据来源等跟UI无关的逻辑。</p>
+<h5 id="Clean框架参考资料"><a href="#Clean框架参考资料" class="headerlink" title="Clean框架参考资料"></a>Clean框架参考资料</h5><ol>
+<li><a href="http://www.qingpingshan.com/rjbc/az/220711.html#" target="_blank" rel="noopener">Clean架构探讨</a></li>
+<li><a href="http://www.tuicool.com/articles/MFrEryz" target="_blank" rel="noopener">使用Clean架构开发Android应用详细指南</a></li>
+<li><a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-clean" target="_blank" rel="noopener">todo-mvp-clean</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/architecture/" rel="tag"><i class="fa fa-tag"></i>architecture</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/16/Dagger2/" rel="next" title="浅谈Dagger2">
+                <i class="fa fa-chevron-left"></i> 浅谈Dagger2
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/09/Material Design 控件使用笔记/" rel="prev" title="Material Design 控件使用笔记">
+                Material Design 控件使用笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="鹰族传人">
+            
+              <p class="site-author-name" itemprop="name">鹰族传人</p>
+              <p class="site-description motion-element" itemprop="description">Blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/about/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/thunderZhang1" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:542931095@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、MVC"><span class="nav-number">1.</span> <span class="nav-text">1、MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">MVC模式的结构分为三部分，实体层的Model，视图层的View，以及控制层的Controller。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#这种模式的优点在于Controller层起到桥梁作用，在View层和Model层之间通信，使得View层和Modle层分离解耦。但是由于在Android中View层的XML控制能力太弱，Controler层的Activity并没有和View层完全分离。当需要动态改变一个页面的显示（如背景、显示隐藏按钮等），都无法在xml中处理，只能在Activity中处理。造成了Activity即时Controller层又是View层，代码繁冗。想必你也有过Activity过于庞大的苦恼吧。"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">这种模式的优点在于Controller层起到桥梁作用，在View层和Model层之间通信，使得View层和Modle层分离解耦。但是由于在Android中View层的XML控制能力太弱，Controler层的Activity并没有和View层完全分离。当需要动态改变一个页面的显示（如背景、显示隐藏按钮等），都无法在xml中处理，只能在Activity中处理。造成了Activity即时Controller层又是View层，代码繁冗。想必你也有过Activity过于庞大的苦恼吧。</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#2-MVP"><span class="nav-number">2.</span> <span class="nav-text">2.MVP</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#总结"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、clean架构"><span class="nav-number">3.</span> <span class="nav-text">3、clean架构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#domain层"><span class="nav-number">3.0.1.</span> <span class="nav-text">domain层</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#data层"><span class="nav-number">3.0.2.</span> <span class="nav-text">data层</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#presentation层"><span class="nav-number">3.0.3.</span> <span class="nav-text">presentation层</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Clean框架参考资料"><span class="nav-number">3.0.4.</span> <span class="nav-text">Clean框架参考资料</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">鹰族传人</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script id="ribbon" type="text/javascript" size="300" alpha="0.6" zindex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

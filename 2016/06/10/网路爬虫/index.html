@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Jsoup Jsoup是一个操作Html的java库。它提供了非常方便Api，通过DOM、CSS、类似JQuery的方式，来取出和操作数据。  在这里我通过分析开源中国页面结构和爬取部分的博客信息来实战Jsoup爬虫示例。至于Jsoup的更多细节的使用请参考Jsoup开发指南,那么废话不多说。  打开开源中国博客页面，我们主要抓取的是如下的博客列表数据 打开Chrome的开发者工具 在Elemen">
+<meta name="keywords" content="python,网络爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自己动手写网络爬虫">
+<meta property="og:url" content="http://yoursite.com/2016/06/10/网路爬虫/index.html">
+<meta property="og:site_name" content="千里之行，始于足下">
+<meta property="og:description" content="Jsoup Jsoup是一个操作Html的java库。它提供了非常方便Api，通过DOM、CSS、类似JQuery的方式，来取出和操作数据。  在这里我通过分析开源中国页面结构和爬取部分的博客信息来实战Jsoup爬虫示例。至于Jsoup的更多细节的使用请参考Jsoup开发指南,那么废话不多说。  打开开源中国博客页面，我们主要抓取的是如下的博客列表数据 打开Chrome的开发者工具 在Elemen">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNc79gy1fdebc83cxvj31cq0j4q8r.jpg">
+<meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79gy1fdebm7fu3hj30eb05uwfk.jpg">
+<meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79gy1fdebwfrwksj30hr0bzdhw.jpg">
+<meta property="og:image" content="https://ww1.sinaimg.cn/large/006tNc79gy1fdec6ugbwqj30mj02bdg8.jpg">
+<meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNc79gy1fdecc1itygj30kc02eweq.jpg">
+<meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNc79gy1fdedk3kgdqj307o042a9z.jpg">
+<meta property="og:image" content="https://ww2.sinaimg.cn/large/006tNc79gy1fdee2yctoaj310t03djur.jpg">
+<meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNc79gy1fdffjrh2x1j30mz04fjrw.jpg">
+<meta property="og:image" content="https://ww3.sinaimg.cn/large/006tNc79gy1fdfgd8yzuyj30s10gjwgm.jpg">
+<meta property="og:image" content="https://ww4.sinaimg.cn/large/006tNc79gy1fdfggn3j5lj30c506ymxs.jpg">
+<meta property="og:updated_time" content="2018-10-26T10:56:27.481Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自己动手写网络爬虫">
+<meta name="twitter:description" content="Jsoup Jsoup是一个操作Html的java库。它提供了非常方便Api，通过DOM、CSS、类似JQuery的方式，来取出和操作数据。  在这里我通过分析开源中国页面结构和爬取部分的博客信息来实战Jsoup爬虫示例。至于Jsoup的更多细节的使用请参考Jsoup开发指南,那么废话不多说。  打开开源中国博客页面，我们主要抓取的是如下的博客列表数据 打开Chrome的开发者工具 在Elemen">
+<meta name="twitter:image" content="https://ww3.sinaimg.cn/large/006tNc79gy1fdebc83cxvj31cq0j4q8r.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/06/10/网路爬虫/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>自己动手写网络爬虫 | 千里之行，始于足下</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">千里之行，始于足下</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">鹰族传人的博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/10/网路爬虫/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="鹰族传人">
+      <meta itemprop="description" content="Blog">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="千里之行，始于足下">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">自己动手写网络爬虫
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-06-10 00:00:00" itemprop="dateCreated datePublished" datetime="2016-06-10T00:00:00+08:00">2016-06-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-26 18:56:27" itemprop="dateModified" datetime="2018-10-26T18:56:27+08:00">2018-10-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/爬虫/" itemprop="url" rel="index"><span itemprop="name">爬虫</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="Jsoup"><a href="#Jsoup" class="headerlink" title="Jsoup"></a>Jsoup</h4><blockquote>
+<p><a href="https://jsoup.org/" target="_blank" rel="noopener">Jsoup</a>是一个操作Html的java库。它提供了非常方便<a href="https://jsoup.org/apidocs/" target="_blank" rel="noopener">Api</a>，通过DOM、CSS、类似JQuery的方式，来取出和操作数据。</p>
+</blockquote>
+<p>在这里我通过分析<a href="https://www.oschina.net/blog" target="_blank" rel="noopener">开源中国</a>页面结构和爬取部分的博客信息来实战Jsoup爬虫示例。至于Jsoup的更多细节的使用请参考<a href="http://www.open-open.com/jsoup/" target="_blank" rel="noopener">Jsoup开发指南</a>,那么废话不多说。</p>
+<ol>
+<li>打开开源中国博客页面，我们主要抓取的是如下的博客列表数据<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fdebc83cxvj31cq0j4q8r.jpg" alt="博客列表"></li>
+<li><p>打开Chrome的开发者工具<br> 在Element标签下点击图示按钮，在页面中选中你要查看的内容，即可查看到对应的Html代码了</p>
+<p><img src="https://ww1.sinaimg.cn/large/006tNc79gy1fdebm7fu3hj30eb05uwfk.jpg" alt=""></p>
+</li>
+</ol>
+<p>   从Html代码中我们看到最新推荐博客列表对应的Html代码为id=“topsOfRecomend”下面的div中。下面图示是列表的item内容，找到这里其实已经成功了一大半了，我们已经找到了我们想要的全部信息。</p>
+<p>   <img src="https://ww4.sinaimg.cn/large/006tNc79gy1fdebwfrwksj30hr0bzdhw.jpg" alt=""></p>
+<ol start="3">
+<li><p>再来思考一个问题，这个列表肯定是有分页的，第二页的数据怎么获取呢？<br>下面就需要到开发工具中的Network找答案了。</p>
+<p><img src="https://ww1.sinaimg.cn/large/006tNc79gy1fdec6ugbwqj30mj02bdg8.jpg" alt=""></p>
+<p>在Network中可以找到页面加载过程中发生的网络请求，其中XHR是XMLHttpRequest，上滑页面加载新的数据，同时在这里找到了这样一个请求信息。<br><img src="https://ww2.sinaimg.cn/large/006tNc79gy1fdecc1itygj30kc02eweq.jpg" alt=""></p>
+<p>返回的数据是和列表数据一致的item的集合。由于返回的HTML代码的格式不是很优雅，这里就不上图了。</p>
+</li>
+</ol>
+<hr>
+<p>   <a href="https://www.oschina.net/action/ajax/get_more_recommend_blog?classification=0&amp;p=2" target="_blank" rel="noopener">https://www.oschina.net/action/ajax/get_more_recommend_blog?classification=0&amp;p=2</a>  这个URL是一个普通的get请求，包含两个参数classification、p。p应该就是page，是递增的页码。classification应该是博客的分类。这里的分类的参数值就留给你去尝试吧。</p>
+<p><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fdedk3kgdqj307o042a9z.jpg" alt=""></p>
+<hr>
+<ol start="4">
+<li><p>页面结构和分析我们已经分析完成了，下面开始撸代码，来验证我们分析的是否正确</p>
+<pre><code>    String rootUrl = &quot;https://www.oschina.net/blog&quot;;//需要爬取页面的根URl
+    int pageIndex = 1;
+    String sourcePath = &quot;https://www.oschina.net/action/ajax/get_more_recommend_blog?classification=0&amp;p=&quot;;//要爬取的地址
+
+    //伪装UA，模拟浏览器访问
+    String ua = &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36&quot;;
+    ArrayList&lt;Blog&gt; blogArrayList = new ArrayList&lt;Blog&gt;();
+
+    try {
+        Document document = Jsoup.connect(rootUrl).header(&quot;User-Agent&quot;,ua).timeout(5000).get();
+        //获取博客分类名称
+        Elements elements = document.select(&quot;span.nm-name&quot;);
+
+    for (Element element:elements){
+        System.out.println(element.html());
+    }
+
+    while(true){//查询全部分页数据
+        String path = sourcePath+pageIndex;
+        Document doc = Jsoup.connect(path).header(&quot;User-Agent&quot;,ua).timeout(5000).get();
+        System.out.println(path);
+        Elements blogs = doc.select(&quot;div.item&quot;);
+        if(blogs.size()==0){//没有数据时表示已经没有下一页结束循环
+            break;
+        }
+        for (Element element:blogs){
+            Element eleAuthor = element.select(&quot;div.box-fl &gt; a&quot;).get(0);
+            String url = eleAuthor.attr(&quot;href&quot;);//博客URL
+            String  authorHeaderImage = eleAuthor.select(&quot;img&quot;).attr(&quot;src&quot;);//发布者头像
+            String title = element.select(&quot;div.box-aw &gt; header &gt; a&quot;).get(0).attr(&quot;title&quot;);//标题
+            String summary = element.select(&quot;div.box-aw &gt; section&quot;).get(0).html();//简介
+            String  author = element.select(&quot;div.box-aw &gt; footer &gt; span&quot;).get(0).html();//作者
+            Blog blog = new Blog(url,title,summary,author,authorHeaderImage);
+            blogArrayList.add(blog);
+        }
+        pageIndex++;
+    }
+    for(Blog blog:blogArrayList){
+        System.out.println(blog.toString());
+    }
+} catch (IOException e) {
+    e.printStackTrace();
+}
+</code></pre><p>相信上面代码阅读起来没有什么难度。简单的做几点说明：</p>
+<ul>
+<li>header中加入User-Agent是因为直接读取时报了403错误，使用UA伪装成浏览器访问。</li>
+<li>获取到博客数据集只是做了print处理，可以根据自己的需要保存到文件或者数据库。</li>
+<li>在使用Select的时候可以在Chrome开发工具中选中要获取的Html标签邮件-&gt;Copy-&gt;Copy Selector</li>
+</ul>
+<p>附上执行结果，程序猿是不会骗人的<br><img src="https://ww2.sinaimg.cn/large/006tNc79gy1fdee2yctoaj310t03djur.jpg" alt=""></p>
+</li>
+</ol>
+<h5 id="webmagic"><a href="#webmagic" class="headerlink" title="webmagic"></a>webmagic</h5><blockquote>
+<p>有些站点,通过异步的方式渲染页面的，通过上述Jsoup的方式获取的Html数据不包含异步请求之后渲染的数据。在爬取类似这样的站点时可以使用<a href="http://webmagic.io/docs/zh/" target="_blank" rel="noopener">webmagic</a></p>
+</blockquote>
+<p>上面分析过开源中国的博客，这次爬取csdn博客页面，分析方法同上</p>
+<pre><code>private Site site = Site.me().setRetryTimes(3).setSleepTime(100);
+public static void main(String[] args){
+    //使用五个线程开启爬虫
+    Spider.create(new WebmagicDemo())
+            .addPipeline(new webmagic.ConsolePipeline())
+            .addUrl(&quot;http://blog.csdn.net/&quot;).thread(5).run();
+}
+
+@Override
+public void process(Page page) {
+    //博客列表标题
+    page.putField(&quot;title&quot;,page.getHtml().xpath(&quot;//*[@class=&apos;blog_list&apos;]/dd/h3/a/text()&quot;).all().toString());
+    //将分页的链接URL加入爬取队列中
+    page.addTargetRequests(page.getHtml().xpath(&quot;//*[@class=&apos;page_nav&apos;]/a/@href&quot;).all());
+    //打印分页URL
+    page.putField(&quot;url&quot;,page.getHtml().xpath(&quot;//*[@class=&apos;page_nav&apos;]/a/@href&quot;).all().toString());
+}
+
+@Override
+public Site getSite() {
+    return site.setUserAgent(&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36&quot;);
+}
+</code></pre><p>同样有几点说明的地方</p>
+<ul>
+<li>获取Html相应标签的信息，作者使用了XSoup的方式获取，XSoup是webmagic在Jsoup的基础上开发的一款XPath解析器。</li>
+<li>可以在Chrome开发工具中选中要获取的Html标签邮件-&gt;Copy-&gt;Copy XPath</li>
+<li>这里只是webmagic的最简单最基本的用法，在实际的开发中请参照webmagic的官方文档</li>
+</ul>
+<h5 id="Gecco"><a href="#Gecco" class="headerlink" title="Gecco"></a>Gecco</h5><blockquote>
+<p><a href="">Gecco</a>是一款用java语言开发的轻量化的易用的网络爬虫。Gecco整合了jsoup、httpclient、fastjson、spring、htmlunit、redission等优秀框架，让您只需要配置一些jquery风格的选择器就能很快的写出一个爬虫。Gecco框架有优秀的可扩展性，框架基于开闭原则进行设计，对修改关闭、对扩展开放。</p>
+</blockquote>
+<p>开发手册中详细介绍了爬取京东全部商品信息。我这里是分析了<a href="http://www.iwgc.cn/" target="_blank" rel="noopener">微广场</a>，爬取站点收录的全部微信公众号信息。上面3种使用Java语言的爬取方式代码已上传至<a href="https://github.com/thunderZhang1/RobotDemo" target="_blank" rel="noopener">github</a>。有关分页爬取采用了稍显low的方式，如果你发现了比较优雅的方式还望不吝赐教。<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fdffjrh2x1j30mz04fjrw.jpg" alt=""></p>
+<pre><code>int pages = pageCount/40+1;//最后一页不足40条
+    for(int i=0;i&lt;pages;i++){
+        String url = &quot;http://www.iwgc.cn/&quot;+bean.getIndex()+&quot;/p/&quot;+i;
+        HttpRequest currentRequest = bean.getRequest();
+        sortRequests.add(currentRequest.subRequest(url));
+}
+</code></pre><ul>
+<li>获取每个类别收录的总数</li>
+<li>以每页40条数据，计算总页数</li>
+</ul>
+<h5 id="Pyhton-urllib"><a href="#Pyhton-urllib" class="headerlink" title="Pyhton + urllib"></a>Pyhton + urllib</h5><p>有关<a href="http://www.liaoxuefeng.com/wiki/001374738125095c955c1e6d8bb493182103fac9270762a000" target="_blank" rel="noopener">Python</a>爬虫的教程网上很多，请自行Google。我这里的demo是爬取<a href="https://movie.douban.com" target="_blank" rel="noopener">豆瓣电影</a>,并将数据保存到movie.scv文件中<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fdfgd8yzuyj30s10gjwgm.jpg" alt=""><br><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fdfggn3j5lj30c506ymxs.jpg" alt=""></p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><ol>
+<li>不论使用哪种方式实现网络爬虫,关键在分析目标站点的页面结构。</li>
+<li>对于直接返回全部HTML信息的站点，直接下载HTML，然后操作DOC直接获取数据。</li>
+<li>对于前端异步渲染的页面，分析对应的AJAX请求，获取数据。</li>
+<li>可以按照自己的需求对爬取的数据进行本地持久化保存。</li>
+<li>可以对爬取的数据进行分析，配合加入数据可视化等工具进行分析。</li>
+<li>本文只做入门了解，实际中的网络爬虫需求要复杂很多，增量爬取，深度爬取等还需深入研究。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i>python</a>
+          
+            <a href="/tags/网络爬虫/" rel="tag"><i class="fa fa-tag"></i>网络爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/10/浅谈共识机制二/" rel="next" title="浅谈区块链共识机制">
+                <i class="fa fa-chevron-left"></i> 浅谈区块链共识机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/16/Dagger2/" rel="prev" title="浅谈Dagger2">
+                浅谈Dagger2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="鹰族传人">
+            
+              <p class="site-author-name" itemprop="name">鹰族传人</p>
+              <p class="site-description motion-element" itemprop="description">Blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/about/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/thunderZhang1" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:542931095@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Jsoup"><span class="nav-number">1.</span> <span class="nav-text">Jsoup</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#webmagic"><span class="nav-number">1.1.</span> <span class="nav-text">webmagic</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Gecco"><span class="nav-number">1.2.</span> <span class="nav-text">Gecco</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pyhton-urllib"><span class="nav-number">1.3.</span> <span class="nav-text">Pyhton + urllib</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">鹰族传人</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script id="ribbon" type="text/javascript" size="300" alpha="0.6" zindex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

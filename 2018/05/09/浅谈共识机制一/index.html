@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。类两军问题两军问题是计算机领域的一个思想实验，用来阐述在一个不可靠的通信链路上试图通过通信以达成一致是存在缺陷的和困难。A1将军可以先发送一个消息：8月1日9点发起攻击。但是，一旦消息发送">
+<meta name="keywords" content="共识算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈区块链共识机制">
+<meta property="og:url" content="http://yoursite.com/2018/05/09/浅谈共识机制一/index.html">
+<meta property="og:site_name" content="千里之行，始于足下">
+<meta property="og:description" content="区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。类两军问题两军问题是计算机领域的一个思想实验，用来阐述在一个不可靠的通信链路上试图通过通信以达成一致是存在缺陷的和困难。A1将军可以先发送一个消息：8月1日9点发起攻击。但是，一旦消息发送">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://bdn.135editor.com/files/users/497/4979474/201807/F8KbIOIY_8FUK.jpg">
+<meta property="og:image" content="https://bdn.135editor.com/files/users/497/4979474/201807/5pkaFjIe_cHdy.png">
+<meta property="og:updated_time" content="2018-10-26T10:58:46.891Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈区块链共识机制">
+<meta name="twitter:description" content="区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。类两军问题两军问题是计算机领域的一个思想实验，用来阐述在一个不可靠的通信链路上试图通过通信以达成一致是存在缺陷的和困难。A1将军可以先发送一个消息：8月1日9点发起攻击。但是，一旦消息发送">
+<meta name="twitter:image" content="https://bdn.135editor.com/files/users/497/4979474/201807/F8KbIOIY_8FUK.jpg">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/09/浅谈共识机制一/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浅谈区块链共识机制 | 千里之行，始于足下</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">千里之行，始于足下</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">鹰族传人的博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/09/浅谈共识机制一/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="鹰族传人">
+      <meta itemprop="description" content="Blog">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="千里之行，始于足下">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈区块链共识机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-05-09 00:00:00" itemprop="dateCreated datePublished" datetime="2018-05-09T00:00:00+08:00">2018-05-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-26 18:58:46" itemprop="dateModified" datetime="2018-10-26T18:58:46+08:00">2018-10-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/区块链/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <section data-role="outer" label="Powered by 135editor.com" style="font-size:16px;font-family:微软雅黑;"><p><img src="https://bdn.135editor.com/files/users/497/4979474/201807/F8KbIOIY_8FUK.jpg" alt="gongshi.jpg"></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><blockquote class="135brush" data-style="font-size:14px" style="max-width: 100%; margin: 0px; padding: 10px 15px 20px; border: 1px solid #1e9be8; line-height: 25px;"><p style="font-size: 14px; color: inherit;">区块链是分布式数据存储、点对点传输、共识机制、加密算法等计算机技术的新型应用模式。本质上可以理解为是一个分布式记账系统,具有去中心化，去信任，不可篡改等特点，这些特点使得共识机制在区块链系统中占有相当重要的地位。</p></blockquote></section><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">类两军问题</span></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);"><span style="font-size: 14px;">两军问题是计算机领域的一个思想实验，用来阐述在一个不可靠的通信链路上试图通过通信以达成一致是存在缺陷的和困难。</span></section></section></section><section class="_135editor" data-role="paragraph" style="border: 0px none; box-sizing: border-box;"><p><br></p></section><p><br></p><p><span style="font-size: 14px; caret-color: red;"><img src="https://bdn.135editor.com/files/users/497/4979474/201807/5pkaFjIe_cHdy.png" alt="liangjun.png"></span></p><p><span style="font-size: 14px; caret-color: red;">A1将军可以先发送一个消息：8月1日9点发起攻击。但是，一旦消息发送出去，A1将军并不知道A2是否收到了这个消息。这种不确定性使得A1将军攻击之前非常犹豫，因为有独自发起攻击的危险。</span></p><p><span style="font-size: 14px;">为了让A1将军放心，A2将军可能要发送一个确认的返回信息给A1将军：“我收到了你消息，我会在8月1日9点发起攻击”。可是，这个给A1将军的确认消息也面临着被守卫军截获的可能，A2将军也犹豫了，如果A1将军没有收到确认信息，那么A1将军很有可能停止此次攻击。</span></p><p><span style="font-size: 14px;">可想而知，最终尴尬的局面就变成了</span></p><p><span style="font-size: 14px;">A1:8月1日9点发起攻击</span></p><p><span style="font-size: 14px;">A2:收到指令。</span></p><p><span style="font-size: 14px;">A1:知道你收到指令了</span></p><p><span style="font-size: 14px;">A2:知道你知道我收到指令了</span></p><p><span style="font-size: 14px;">…</span></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">拜占庭将军问题</span><br></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);"><span style="caret-color: red; font-size: 14px;">拜占庭将军问题是由莱斯利·兰伯特提出的点对点通信中的基本问题。含义是在存在消息丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。</span></section></section></section><p><br></p><p><span style="font-size: 14px;">拜占庭罗马帝国在军事行动中，采取将军投票策略来决定进攻还是撤退，即如果多数人决定进攻，就整体确定进攻策略。但是军队中如果有奸细（将军可能反水、传令官可能误传），如何保证最后投票真实反映忠诚将军的决策？</span></p><p><span style="font-size: 14px;">拜占庭帝国周围有10个小国，它们饱受拜占庭欺压，却只有同一时间有6个以上国家进攻才有可能打败拜占庭帝国，非则一定战败。</span></p><p><span style="font-size: 14px;">难点在于：古时候军队之间的通信完全依赖于人，如果军队中有奸细，无论是将军反水还是传令官误传，都会是另外9个国家收到假消息，从而造成作战失败。如果你是国王，该如何判断一定会有另外5个以上国家与你并肩作战？毕竟一不小心，就亡国了。</span></p><p><br></p><p><span style="font-family: 微软雅黑; color: rgb(0, 0, 0); font-size: 14px;"><span style="color: rgb(0, 0, 0); font-family: 微软雅黑; widows: 1; caret-color: red; font-weight: 700;">由于类似于以上这样的问题存在，共识的必要性浮现出来。</span><span class="Apple-converted-space" style="color: rgb(0, 0, 0); font-family: 微软雅黑; widows: 1; caret-color: red;">&nbsp;</span></span></p><p><span style="font-family: 微软雅黑; color: rgb(0, 0, 0); font-size: 14px;"><strong><span class="Apple-converted-space" style="widows: 1; caret-color: red; font-family: 微软雅黑; color: rgb(0, 0, 0); font-size: 14px;">虽然区块链系统中共识机制有多种，但都应该具有以下三种属性：一致性、正确性、可结束性</span></strong></span></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">工作量证明（POW)</span><br></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);"><span style="font-size: 14px;">PoW, proof of work, 即工作量证明。简单理解就是一份确认你做过一定量的工作的证明。</span></section></section></section><p><br></p><p><span style="font-size: 14px;">比特币在区块的生成过程种使用了PoW机制，一个符合要求的区块哈希值由N个前导零构成，零的个数取决于网络的难度值。要得到合理的区块哈希值需要经过大量的尝试计算，计算时间取决于机器的哈希运算速度。当某个节点提供出一个合理的区块哈希值，说明该节点确实经过了大量的尝试计算，但是并不能得出计算次数，因为寻找合理的哈希值是一个概率事件。当节点拥有占全网n%的算力时，该节点既有n%的概率找到区块哈希值。</span></p><p><br></p><p><strong><span style="font-size: 14px;">PoW的优点：完全去中心化，节点自由进出。</span></strong></p><p><strong><span style="font-size: 14px;">PoW的缺点：挖矿造成大量的资源浪费；共识达成的周期较长</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：BTC、ETH</span></strong></p><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">权益证明（PoS)</span></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);">Pow的一种升级共识机制；根据每个节点所占代币的比例和时间；等比例的降低挖矿难度，从而加快找随机数的速度。</section></section></section><p><br></p><p><span style="caret-color: red; font-size: 14px;">PoS的主要理念是节点记账权的获得难度与节点持有的权益(token)成反比。<br></span></p><p><span style="font-size: 14px;">这个系统中存在一个持币人的集合，他们把手中的代币放入PoS机制中，这样他们就变成验证者。比如对区块链最前面的一个区块而言，PoS算法在验证者中随机选择一个（选择验证者的权重依据他们投入的代币量，比如一个投入押金为1W代币的验证者被选择的概率是一个投入1K代币验证者的10倍），给他权利产生下一个区块。如果在一定时间内，这个验证者没有产生一个区块，则选出第二个验证者代替产生新区块。</span></p><p><br></p><p><strong><span style="font-size: 14px;">PoS的优点：在一定程度上缩短了共识达成的时间；不再需要大量消耗能源去挖矿。</span></strong></p><p><strong><span style="font-size: 14px;">PoS的缺点：还是需要挖矿，本质上没有解决商业应用的痛点；极端的情况下会带来中心化的结果。</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：NXT</span></strong></p><p><br></p><section data-id="undefined" class="_135editor" style="border: 0px none; box-sizing: border-box;"><p style="margin: 8px 0px 0px; padding: 0px; font-weight: bold; font-size: 16px; line-height: 28px; max-width: 100%; color: #1e9be8; min-height: 32px; border-bottom-width: 2px; border-bottom-style: solid; border-color: #1e9be8; text-align: justify;"><span class="autonum" data-original-title="" placeholder="1" style="background-color:#1e9be8; color:#ffffff; display:block; float:left; line-height:20px; margin:0px 8px 0px 0px; max-width:100%; padding:4px 10px; word-wrap:break-word !important" title="">股份授权证明（DPOS）</span></p></section><section class="_135editor" data-tools="135编辑器" data-id="7" style="border: 0px none; box-sizing: border-box;"><section style="white-space: normal; padding-left: 10px; max-width: 100%; border-left: 5px solid rgb(157, 180, 194); box-sizing: border-box;"><section class="135brush" style="font-size: 13px;text-align: justify;letter-spacing: 1px;line-height: 1.75em; color: rgba(102, 102, 102,0.8);">股份授权证明机制是一种新的保障网络安全的共识机制。它在尝试解决传统的PoW机制和PoS机制问题的同时，还能通过实施科技式的民主抵消中心化所带来的负面效应。</section></section></section><p><br></p><p><span style="font-size: 14px;">BitShares（比特股）社区首先提出了股份授权证明（简称DPoS）机制，它与PoS的主要区别在于节点选举若干代理人，由代理人验证和记账，但其合规监管、性能、资源消耗和容错性与PoS相似。类似于董事会投票，持币者投出一定数量的节点，进行代理验证和记账。</span></p><p><span style="font-size: 14px;">DPoS的工作原理如下：每个股东按其持股比例拥有相应的影响力，51%股东投票的结果将是不可逆且有约束力的，其挑战是通过及时而高效的方法达到“51%批准”；</span></p><p><span style="font-size: 14px;">为了达到这个目标，每个股东可以将其投票授予一名代表。获票数最多的前N位代表按既定时间表轮流产生区块。每位代表分配到一个时间段来生产区块。</span></p><p><br></p><p><strong><span style="font-size: 14px;">DPoS的优点：大幅缩小参与验证和记账节点的数量，可以达到秒级的共识验证。</span></strong></p><p><strong><span style="font-size: 14px;">DPoS的缺点： 牺牲了去中心化的概念。虽然恶意的节点将在下一轮投票被踢出，但单个恶意区块在短期仍有可能是有效的状态。</span></strong></p><p><strong><span style="font-size: 14px;">代表币种：BTS、EOS</span></strong></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p></section>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/共识算法/" rel="tag"><i class="fa fa-tag"></i>共识算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/09/Material Design 控件使用笔记/" rel="next" title="Material Design 控件使用笔记">
+                <i class="fa fa-chevron-left"></i> Material Design 控件使用笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="鹰族传人">
+            
+              <p class="site-author-name" itemprop="name">鹰族传人</p>
+              <p class="site-description motion-element" itemprop="description">Blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/about/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/thunderZhang1" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:542931095@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">鹰族传人</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script id="ribbon" type="text/javascript" size="300" alpha="0.6" zindex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

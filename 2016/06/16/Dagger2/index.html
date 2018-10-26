@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.4.2" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.2" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.4.2',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="IOC IOC—Inversion of Control，即“控制反转”，是一种设计思想。在Java开发中，Ioc意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。  上面的解释看不懂没关系，那么我们就从一杯星巴克咖啡的制作开始吧。 /**    * Created by zhangjingjing on 2017/3/3.    *  咖啡师   */ public cla">
+<meta name="keywords" content="Dagger2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈Dagger2">
+<meta property="og:url" content="http://yoursite.com/2016/06/16/Dagger2/index.html">
+<meta property="og:site_name" content="千里之行，始于足下">
+<meta property="og:description" content="IOC IOC—Inversion of Control，即“控制反转”，是一种设计思想。在Java开发中，Ioc意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。  上面的解释看不懂没关系，那么我们就从一杯星巴克咖啡的制作开始吧。 /**    * Created by zhangjingjing on 2017/3/3.    *  咖啡师   */ public cla">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-10-26T10:57:34.625Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈Dagger2">
+<meta name="twitter:description" content="IOC IOC—Inversion of Control，即“控制反转”，是一种设计思想。在Java开发中，Ioc意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。  上面的解释看不懂没关系，那么我们就从一杯星巴克咖啡的制作开始吧。 /**    * Created by zhangjingjing on 2017/3/3.    *  咖啡师   */ public cla">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/06/16/Dagger2/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浅谈Dagger2 | 千里之行，始于足下</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">千里之行，始于足下</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">鹰族传人的博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/06/16/Dagger2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="鹰族传人">
+      <meta itemprop="description" content="Blog">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="千里之行，始于足下">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浅谈Dagger2
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-06-16 00:00:00" itemprop="dateCreated datePublished" datetime="2016-06-16T00:00:00+08:00">2016-06-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-26 18:57:34" itemprop="dateModified" datetime="2018-10-26T18:57:34+08:00">2018-10-26</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h4><blockquote>
+<p>IOC—Inversion of Control，即“控制反转”，是一种设计思想。在Java开发中，Ioc意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。</p>
+</blockquote>
+<p>上面的解释看不懂没关系，那么我们就从一杯星巴克咖啡的制作开始吧。</p>
+<pre><code>/**
+   * Created by zhangjingjing on 2017/3/3.
+   *  咖啡师
+  */
+public class CoffeeMaker {
+    //咖啡中需要的牛奶
+    private Milk milk;
+    //咖啡中需要的原味咖啡
+    private Coffee coffee;
+
+    public CoffeeMaker() {
+        //产生制作需要的牛奶的原味咖啡
+        this.milk = new Milk();
+        this.coffee = new Coffee();
+    }
+    //制作咖啡
+    public void makeCoffee(){
+        this.milk.addMilk();
+        this.coffee.addCoffee();
+    }
+}
+</code></pre><p>   那么想象一下，如果制作原味咖啡的工序(Coffee的构造方法)变化了，你还要来修改CoffeeMaker的中new Coffee的代码，也许这里并不能感受到修改这样一处代码的痛苦，但是对于经历过大型复杂项目的程序猿来说，这是不能忍的。</p>
+<pre><code>public CoffeeMaker(Milk milk,Coffee coffee) {
+    //产生制作需要的牛奶的原味咖啡
+    this.milk = milk;
+    this.coffee = coffee;
+}
+</code></pre><p> 假如我们提供这样的构造方法，由外部控制产生牛奶咖啡需要的原料，咖啡师只需要说明需要什么材料就可以了。这便是IOC思想，将控制权转交给外部。</p>
+<h4 id="DI"><a href="#DI" class="headerlink" title="DI"></a>DI</h4><blockquote>
+<p>DI—Dependency Injection，即“依赖注入”,是实现IOC的一种方法。就是对象创建的时候用一种方式将所有需要的依赖实体的引用传递给该对象。</p>
+</blockquote>
+<p>使用DI，我们统一管理实例，并进行解耦，new只需要写在一个地方，代码灵活而且方便测试。</p>
+<h4 id="Dagger2"><a href="#Dagger2" class="headerlink" title="Dagger2"></a>Dagger2</h4><blockquote>
+<p><a href="https://github.com/frogermcs/Dagger2Recipes-UserScope" target="_blank" rel="noopener">Dagger2</a>是一款基于Java注解来实现的完全在编译阶段完成依赖注入的开源库。</p>
+</blockquote>
+<p>既然是基于注解来实现的，下面就逐个分析各个注解的作用和用法。Dagger2中我们经常使用的有@Inject, @Module, @Provides, @Component, @Qulifier, @Scope, @Singleten。</p>
+<ul>
+<li>@Inject： 用来注解变量或者注解构造方法。使用@Inject标注的变量，Dagger2会为此变量提供依赖。使用@Inject标记构造方法，Dagger2会使用此构造方法为使用@Inject标记的变量创建实例。</li>
+<li>@Module： 在我们的项目中会使用第三方库，无法在第三方库中的类的构造方法中使用Inject注解，这个时候就要使用Module了。</li>
+<li>@Provides：@Provides用于标注Module所标注的类中的方法，该方法在需要提供依赖时被调用，从而把预先提供好的对象当做依赖给使用@Inject标注的变量赋值；</li>
+<li>@Component：Component一般用来标注接口，被标注了Component的接口在编译时会产生相应类的实例来作为提供依赖方和需要依赖方之间的桥梁，把相关依赖注入其中。</li>
+</ul>
+<p>按照惯例，依然是分析代码来感受上述四个注解。因<a href="https://github.com/googlesamples/android-architecture/tree/todo-mvp-dagger" target="_blank" rel="noopener">Google android-architecture</a>是按照业务分包管理的，不利于直观理解。以Uncle Bob的<a href="https://github.com/android10/Android-CleanArchitecture" target="_blank" rel="noopener">CleanArchitecture</a>为例，主要分析与Dagger2相关的代码，有关Clean架构方面不在赘述</p>
+<p>UserListFragment.java</p>
+<pre><code>@Inject
+UserListPresenter userListPresenter;//使用Inject注解变量
+@Inject
+UsersAdapter usersAdapter;//使用Inject注解变量
+</code></pre><p>  UserListFragment中有两个变量使用了@Inject注解。先看userListPresenter，首先去查看是否存在产生UserListPresenter对象的Module。<strong>与Dagger2相关的代码在com.fernandocejas.android10.sample.presentation.internal.di包下</strong>。不存在符合条件的Module，所以去查看对应类的构造方法。</p>
+<p> UserListPresenter.java</p>
+<pre><code>@Inject
+public UserListPresenter(GetUserList getUserListUserCase,UserModelDataMapperuserModelDataMapper) {
+   this.getUserListUseCase = getUserListUserCase;
+   this.userModelDataMapper = userModelDataMapper;
+}
+</code></pre><p> UserListPresenter的构造方法使用了@Inject注解，所以到这里我们明白Dagger2会为UserListFragment中的UserListPresenter提供依赖，在需要的时候创建实例进行赋值。<strong>这里需要说明的是使用@Inject注解的构造方法含有参数，构造时参数的创建和使用@Inject注解的变量的创建方式一样，先找是否存在提供依赖的Module，不存在则去查找对应的构造方法。</strong></p>
+<p>再回过头来分析usersAdapter。</p>
+<pre><code>@Inject
+UsersAdapter(Context context) {
+    this.layoutInflater =(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    this.usersCollection = Collections.emptyList();
+}
+</code></pre><p> UsersAdapter的构造方法需要一个Context对象，同样的去找对应的Module，我们发现ApplicationModule使用了@Module注解，同时存在产生Context且使用<strong>@Provides</strong>的方法</p>
+<pre><code>@Provides 
+@Singleton 
+Context provideApplicationContext() {
+    return this.application;
+}
+</code></pre><p>then,Component是连接提供依赖方和需要依赖方的桥梁，那么肯定有Component将ApplicationModule和UsersAdapter关联起来。</p>
+<pre><code>@Singleton // Constraints this component to one-per-application or unscoped bindings.
+@Component(modules = ApplicationModule.class)
+public interface ApplicationComponent {
+    void inject(BaseActivity baseActivity);
+
+    //Exposed to sub-graphs.
+    Context context();
+    ThreadExecutor threadExecutor();
+    PostExecutionThread postExecutionThread();
+    UserRepository userRepository();
+}
+</code></pre><p>看了这个发现Component再modules=“***Moudle.class”指定了Mudule模块，一个Component可以使用{}指定多个module。</p>
+<p>Wow！Dagger2这么智能，这样变量就可以直接使用了？当然你肯定是想多了，Dagger2确实好用，但是不至于智能到这个程度。再来回顾下UserListFragment.java代码，在OnCreate中发现这样一行代码</p>
+<pre><code>this.getComponent(UserComponent.class).inject(this);
+</code></pre><p>整个调用过程为</p>
+<pre><code>DaggerUserComponent.builder().applicationComponent(getApplicationComponent()).activityModule(getActivityModule()).build().inject(UserListFragment.this);
+</code></pre><p>这里的DaggerUserComponent是Dagger2为使用@Component标注的接口UserComponent生成的实现。再来看UserComponent的代码</p>
+<pre><code>@PerActivity
+@Component(dependencies = ApplicationComponent.class, modules = {ActivityModule.class, UserModule.class})
+public interface UserComponent extends ActivityComponent {
+    void inject(UserListFragment userListFragment);
+    void inject(UserDetailsFragment userDetailsFragment);
+}
+</code></pre><ul>
+<li>这里定义的inject方法，主要是遍历UserListFragment中所有使用@Inject的变量，并为其创建需要的对象。方法名不做限制，但是为了便于理解，一般都使用inject</li>
+<li>dependencies可以指定依赖的Component,<strong>ApplicationComponent作为parent Component，需要定义相应返回值的方法。</strong>因为UserComponent依赖ApplicationComponent，而且在ApplicationComponent中定义了Context context()，所以在ApplicationComponent指定的ApplicationModule中才可以为UserAdapter构造方法中需要的Context提供依赖，创建对应的实例。 Component的依赖有两种：dependencies和@SubComponent,这两种方式的区别，待深入了解后完善。</li>
+</ul>
+<hr>
+<p>我们提到@Inject和@Module都可以提供依赖，如果我们既在构造函数上通过标记@Inject提供依赖，又通过@Module提供依赖，Dagger2会如何选择呢？具体规则如下：</p>
+<ul>
+<li>步骤1：首先查找@Module标注的类中是否存在提供依赖的方法。</li>
+<li>步骤2：若存在提供依赖的方法，查看该方法是否存在参数。<ul>
+<li>a：若存在参数，则按从步骤1开始依次初始化每个参数；<ul>
+<li>b：若不存在，则直接初始化该类实例，完成一次依赖注入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>步骤3：若不存在提供依赖的方法，则查找@Inject标注的构造方法，看构造方法是否存在参数。<ul>
+<li>a：若存在参数，则从步骤1开始依次初始化每一个参数</li>
+<li>b：若不存在，则直接初始化该类实例，完成一次依赖注入。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>@Scope:自定义注解，通过@Scope自定义的注解来限定作用域，使用相同的自定义注解，能够更好的管理Component和Module。<br>上面代码中看到的@Singleton、@PreActivity、@PreFragment都属于@Scope自定义的注解。</p>
+<p>@Singleton是官方默认提供的一个自定义注解，需要注意的是使用@Singleton并不能真正产生单例，只是作为单例标示。比如在Demo中ApplicationComponent使用了@SingleTon，然后AndroidApplication.java因为只在App启动时创建，在Application中创建ApplicationComponent,所以是通过这种方式实现的单例。使用@Scope自定义注解标注的Component指定的Module的方法也要指定相同的注解</p>
+<p>ApplicationModule.java</p>
+<pre><code>@Module
+public class ApplicationModule {
+   private final AndroidApplication application;
+
+   public ApplicationModule(AndroidApplication application) {
+      this.application = application;
+   }
+
+   @Provides
+   @Singleton //ApplicationModule中的方法也要使用Singleton
+   Context provideApplicationContext() {
+     return this.application;
+   }
+}
+</code></pre><p>同样的，@PreActivity注解的ActivityComponent和Activity的生命周期一致，通过每一个Activity都会重新创建对应的依赖的方式来保证和Activity生命周期一致。</p>
+<pre><code>@Module
+public class ActivityModule {
+  private final Activity activity;
+
+  public ActivityModule(Activity activity) {
+    this.activity = activity;
+  }
+
+  /**
+  * Expose the activity to dependents in the graph.
+  */
+  @Provides @PerActivity Activity activity() {
+    return this.activity;
+  }
+}
+</code></pre><p>Dagger2还有很多用法，比如当存在多个产生相同类型对象的Provides时使用@Named告诉Dagger2使用哪个提供依赖，虽然Demo没有体现，但是在平时开发中也会经常遇到。这些更好玩更高级的用法就等你自己的发掘了</p>
+<h5 id="Android开发中配置Dagger2"><a href="#Android开发中配置Dagger2" class="headerlink" title="Android开发中配置Dagger2"></a>Android开发中配置Dagger2</h5><ol>
+<li><p>Dagger2使用apt方式编译生成对应的类，所以要在工程的build.gradle中</p>
+<pre><code>buildscript {
+    dependencies {
+         classpath &apos;com.android.tools.build:gradle:2.1.0&apos;
+           // 添加android-apt 插件
+        classpath &apos;com.neenbedankt.gradle.plugins:android-apt:1.8&apos;
+   }
+}
+</code></pre></li>
+<li><p>按照官方提供的<a href="https://github.com/google/dagger#android-gradle" target="_blank" rel="noopener">文档</a>中在项目的build.gradle中添加</p>
+<pre><code>// 应用插件
+apply plugin: &apos;com.neenbedankt.android-apt&apos;
+
+dependencies {
+   // dagger 2 的配置
+    compile &apos;com.google.dagger:dagger:2.4&apos;
+    apt &apos;com.google.dagger:dagger-compiler:2.4&apos;
+    compile &apos;org.glassfish:javax.annotation:10.0-b28&apos;// 添加java 注解库
+}
+</code></pre><blockquote>
+<p>android-apt是Gradle编译器的插件，编译期的类库根据其官方文档，主要两个目的：</p>
+<ul>
+<li>编译时使用该工具，最终打包时不会将该插件打入到apk中。</li>
+<li>能够根据设置的源路径，在编译时期生成相应代码。</li>
+</ul>
+<p>dagger是主要的工具类库。dagger-compiler为编译时期生成代码等相关的类库。因为，编译时期生成代码的类库在运行期并不需要，那么将其<br>分为两个库，（运行类库dagger）和（编译器生成代码类库（dagger-compiler）），那么在打包时，就不需要将dagger-compiler打入其中，减小APK 的大小。</p>
+</blockquote>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dagger2/" rel="tag"><i class="fa fa-tag"></i>Dagger2</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/10/网路爬虫/" rel="next" title="自己动手写网络爬虫">
+                <i class="fa fa-chevron-left"></i> 自己动手写网络爬虫
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/22/Android-Architecture/" rel="prev" title="浅谈Android架构">
+                浅谈Android架构 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="鹰族传人">
+            
+              <p class="site-author-name" itemprop="name">鹰族传人</p>
+              <p class="site-description motion-element" itemprop="description">Blog</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/about/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/thunderZhang1" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:542931095@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#IOC"><span class="nav-number">1.</span> <span class="nav-text">IOC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DI"><span class="nav-number">2.</span> <span class="nav-text">DI</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dagger2"><span class="nav-number">3.</span> <span class="nav-text">Dagger2</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Android开发中配置Dagger2"><span class="nav-number">3.1.</span> <span class="nav-text">Android开发中配置Dagger2</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">鹰族传人</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script id="ribbon" type="text/javascript" size="300" alpha="0.6" zindex="-1" src="/lib/canvas-ribbon/canvas-ribbon.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.4.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.4.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
